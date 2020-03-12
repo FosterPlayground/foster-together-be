@@ -44,12 +44,15 @@ describe('api/families', () => {
       expect(JSON.parse(res.text).length).toBe(4)
 
       expect(JSON.parse(res.text)[0]).toMatchObject({
+        family_id: 1,
         first_name: 'Joseph',
         last_name: 'Rodriguez',
         email: 'Joseph49er@yahoo.com',
         phone: '200-800-7648',
         address: '1245 Wynnstone Dr',
-        city_state_zip_id: 1,
+        city: 'Boulder',
+        state: 'Colorado',
+        zip: '80301',
       })
     })
   })
@@ -61,12 +64,15 @@ describe('api/families', () => {
       expect(res.status).toBe(200)
 
       expect(JSON.parse(res.text)).toMatchObject({
+        family_id: 1,
         first_name: 'Joseph',
         last_name: 'Rodriguez',
         email: 'Joseph49er@yahoo.com',
         phone: '200-800-7648',
         address: '1245 Wynnstone Dr',
-        city_state_zip_id: 1,
+        city: 'Boulder',
+        state: 'Colorado',
+        zip: '80301',
       })
     })
   })
@@ -107,25 +113,13 @@ describe('api/families', () => {
 
   describe(`custom error handling`, () => {
     test('should respond with status 500, a message, and the original thrown error', async () => {
-      const res = await request(server)
-        .post('/api/families')
-        .send({
-          first_name: 'John',
-          last_name: 'Smith',
-          phone: '503-555-8654',
-          address: '1234 Main Street, APT 5',
-          city: 'New Haven',
-          state: 'Connecticut',
-          zip: '06512',
-        })
+      const res = await request(server).get('/api/families/a')
 
       expect(res.status).toBe(500)
 
       expect(JSON.parse(res.text).message).toBe('Uh Oh! 500 Error!')
 
-      expect(JSON.parse(res.text).error).toBe(
-        'insert into "families" ("address", "city_state_zip_id", "email", "first_name", "last_name", "phone") values ($1, $2, DEFAULT, $3, $4, $5) returning "first_name", "last_name", "email", "phone", "address", "city_state_zip_id" - null value in column "email" violates not-null constraint'
-      )
+      expect(JSON.parse(res.text).error).toMatch(/invalid input syntax/)
     })
   })
 })

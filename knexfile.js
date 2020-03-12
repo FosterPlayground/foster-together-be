@@ -1,47 +1,44 @@
-const env = require('./env.js')
+const { DATABASE_URL } = require('./env.js'),
+  testDB = require('./data/knex/knextest')
 
 module.exports = {
   development: {
     client: 'pg',
-    connection: env.DATABASE_URL,
-    migrations: {
-      directory: './data/migrations',
-    },
-    seeds: {
-      directory: './data/seeds',
-    },
+    connection: DATABASE_URL,
+    migrations: { directory: './data/migrations' },
+    seeds: { directory: './data/seeds' },
   },
 
-  testing: {
+  test: {
     client: 'pg',
-    connection: env.TEST_DB,
-    migrations: {
-      directory: './data/migrations',
-    },
-    seeds: {
-      directory: './data/seeds',
-    },
+    connection: testDB,
+    migrations: { directory: './data/migrations' },
+    seeds: { directory: './data/seeds' },
   },
 
   staging: {
     client: 'pg',
-    connection: env.DATABASE_URL,
-    migrations: {
-      directory: './data/migrations',
+    connection: {
+      host: process.env.RDS_HOSTNAME,
+      user: process.env.RDS_USERNAME,
+      password: process.env.RDS_PASSWORD,
+      port: process.env.RDS_PORT,
+      database: 'postgres',
     },
-    seeds: {
-      directory: './data/seeds',
-    },
+    migrations: { directory: './data/migrations' },
+    seeds: { directory: './data/seeds' },
   },
 
   production: {
     client: 'pg',
-    connection: env.DATABASE_URL,
-    migrations: {
-      directory: './data/migrations',
+    connection: {
+      host: process.env.RDS_HOSTNAME,
+      user: process.env.RDS_USERNAME,
+      password: process.env.RDS_PASSWORD,
+      port: process.env.RDS_PORT,
+      database: 'postgres',
     },
-    seeds: {
-      directory: './data/seeds',
-    },
+    migrations: { directory: './data/migrations' },
+    seeds: { directory: './data/seeds/productionSeed' },
   },
 }
